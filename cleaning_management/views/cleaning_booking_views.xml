@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--Allows users to view the cleaning management as a tree and
+    provides a form for inputting cleaning management-->
+    <record id="cleaning_booking_action" model="ir.actions.act_window">
+        <field name="name">Work Order</field>
+        <field name="res_model">cleaning.booking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a New Work Order
+            </p>
+        </field>
+    </record>
+    <!--Cleaning management form view-->
+    <record id="cleaning_booking_view_form" model="ir.ui.view">
+        <field name="name">cleaning.booking.view.form</field>
+        <field name="model">cleaning.booking</field>
+        <field name="arch" type="xml">
+            <form duplicate="0">
+                <header>
+                    <button name="action_booking" string="Confirm"
+                            class="oe_highlight" type="object" invisible="not confirm_stage"/>
+                    <button name="action_cancel" string="Cancel"
+                            class="oe_highlight" type="object" invisible="cancel_stage"/>
+                    <button name="action_create_invoice" type="object"
+                            string="Create Invoice"
+                            invisible="1"/>
+                    <button name="action_done" string="Finalize WO"
+                            class="oe_highlight" type="object" invisible="state != 'cleaned'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,booked,cleaned,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_sale_order"
+                                class="oe_stat_button"
+                                icon="fa-usd"
+                                invisible="not sale_order_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sales Order</span>
+                            </div>
+                        </button>
+                        <button type="object" name="action_view_team_duty"
+                                class="oe_stat_button"
+                                icon="fa-users"
+                                invisible="not cleaning_team_duty_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Team Duty</span>
+                            </div>
+                        </button>
+                         <button type="object" name="action_view_invoice"
+                                 class="oe_stat_button"
+                                 icon="fa-pencil-square-o"
+                                 invisible="invoice_count == 0">
+                             <field name="invoice_count" widget="statinfo"
+                                    string="Invoice"/>
+                         </button>
+                         <button type="object" name="action_view_entries"
+                                 class="oe_stat_button"
+                                 icon="fa-list"
+                                 invisible="entry_count == 0">
+                             <field name="entry_count" widget="statinfo"
+                                    string="Journal Entries"/>
+                         </button>
+                         <button type="object" name="action_view_all_inspections"
+                                 class="oe_stat_button"
+                                 icon="fa-check-square-o"
+                                 invisible="all_inspection_count == 0">
+                             <field name="all_inspection_count" widget="statinfo"
+                                    string="Inspections"/>
+                         </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="customer_name_id"/>
+                            <field name="sale_order_id"/>
+                            <field name="address"/>
+                            <field name="building_type_id"/>
+                            <field name="service_type_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="booking_date"/>
+                            <field name="location_state_id"/>
+                            <field name="place"/>
+                            <field name="confirm_stage" invisible="1"/>
+                            <field name="clean_stage" invisible="1"/>
+                            <field name="cancel_stage" invisible="1"/>
+                            <field name="cleaning_team_duty_id" invisible="1"/>
+                        </group>
+                        <group position="right">
+                            <field name="cleaning_date"/>
+                            <field name="cleaning_time"/>
+                            <field name="cleaning_team_ids" invisible="1"/>
+                            <field name="cleaning_team_id" options="{'no_create': True}"/>
+                            <field name="description"/>
+                            <field name="unit_price" invisible="1"/>
+                            <field name="total_hour_of_working" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="raw_material_cost" string="Raw Material Cost">
+                            <field name="raw_material_line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id" options="{'no_create': True}"/>
+                                    <field name="qty"/>
+                                    <field name="unit_cost"/>
+                                    <field name="total_cost" sum="Total Raw Material"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="labor_cost" string="Labor Cost">
+                            <field name="labor_cost_line_ids" readonly="1" force_save="1">
+                                <tree editable="bottom">
+                                    <field name="employee_id" options="{'no_create': True}"/>
+                                    <field name="worked_hours" widget="float_time"/>
+                                    <field name="cost_per_hour"/>
+                                    <field name="total_cost" sum="Total Labor Cost"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="cost_summary" string="Summary">
+                         <group>
+                             <group>
+                                 <field name="total_raw_material_cost" readonly="1"/>
+                                 <field name="total_labor_cost" readonly="1"/>
+                                 <field name="total_man_hours" readonly="1"/>
+                                 <field name="total_overhead_cost" readonly="1"/>
+                                 <field name="total_wo_cost" readonly="1" class="oe_subtotal_footer_separator"/>
+                             </group>
+                         </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--Cleaning management tree view-->
+    <record id="cleaning_booking_view_tree" model="ir.ui.view">
+        <field name="name">cleaning.booking.view.tree</field>
+        <field name="model">cleaning.booking</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="customer_name_id"/>
+                <field name="address"/>
+                <field name="building_type_id"/>
+                <field name="booking_date"/>
+                <field name="cleaning_team_id"/>
+                <field name="cleaning_date"/>
+                <field name="cleaning_time"/>
+                 <field name="state" widget="badge"
+                        decoration-success="state in ['cleaned', 'done']"
+                        decoration-info="state == 'booked'"
+                        decoration-danger="state == 'cancelled'"
+                        optional="show"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

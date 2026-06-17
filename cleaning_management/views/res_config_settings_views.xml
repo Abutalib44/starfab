@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.cleaning.management</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="90"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Service Management" string="Service Management" name="cleaning_management">
+                    <block title="Service Management Costing" name="service_management_costing">
+                        <setting string="Overhead Costing" help="Set fixed overhead unit cost per hour">
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <label for="overhead_unit_cost" class="o_light_label"/>
+                                    <field name="overhead_unit_cost"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Accounting Accounts" help="Configure accounts for Work Order journal entries">
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <label for="wip_account_id" class="o_light_label"/>
+                                    <field name="wip_account_id" options="{'no_create': True}"/>
+                                </div>
+                                <div class="mt16">
+                                    <label for="cogs_account_id" class="o_light_label"/>
+                                    <field name="cogs_account_id" options="{'no_create': True}"/>
+                                </div>
+                                <div class="mt16">
+                                    <label for="valuation_account_id" class="o_light_label"/>
+                                    <field name="valuation_account_id" options="{'no_create': True}"/>
+                                </div>
+                                <div class="mt16">
+                                    <label for="labor_cost_account_id" class="o_light_label"/>
+                                    <field name="labor_cost_account_id" options="{'no_create': True}"/>
+                                </div>
+                                <div class="mt16">
+                                    <label for="overhead_cost_account_id" class="o_light_label"/>
+                                    <field name="overhead_cost_account_id" options="{'no_create': True}"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Accounting Journal" help="Configure journal for Work Order entries">
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <label for="wo_journal_id" class="o_light_label"/>
+                                    <field name="wo_journal_id" options="{'no_create': True}"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="cleaning_management_config_settings_action" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'cleaning_management'}</field>
+    </record>
+
+    <menuitem id="cleaning_management_menu_settings"
+              name="Settings"
+              parent="cleaning_management_menu_configuration"
+              sequence="0"
+              action="cleaning_management_config_settings_action"
+              groups="base.group_system"/>
+</odoo>

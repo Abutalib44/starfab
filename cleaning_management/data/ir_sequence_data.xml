@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Work Order (cleaning.booking) -->
+        <record id="seq_cleaning_booking" model="ir.sequence">
+            <field name="name">Cleaning Booking Sequence</field>
+            <field name="code">cleaning.booking</field>
+            <field name="prefix">WO/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Team Duty (cleaning.team.duty) -->
+        <record id="seq_cleaning_team_duty" model="ir.sequence">
+            <field name="name">Cleaning Team Duty Sequence</field>
+            <field name="code">cleaning.team.duty</field>
+            <field name="prefix">TD/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Cleaning Inspection (cleaning.inspection) -->
+        <record id="seq_cleaning_inspection" model="ir.sequence">
+            <field name="name">Cleaning Inspection Sequence</field>
+            <field name="code">cleaning.inspection</field>
+            <field name="prefix">INS/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

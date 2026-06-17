@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_cleaning" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.cleaning</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Create Work Order button in header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_create_work_order" 
+                        string="Create Work Order" 
+                        type="object" 
+                        class="btn-primary" 
+                        invisible="state not in ['draft', 'sent'] or booking_count &gt; 0"/>
+            </xpath>
+
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">draft,sent,wo_running,sale</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_confirm'][@id='action_confirm']" position="attributes">
+                <attribute name="invisible">state != 'wo_running'</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_confirm'][not(@id)]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Add Smart Button in button box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_work_orders" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-tasks" 
+                        invisible="booking_count == 0">
+                    <field name="booking_count" widget="statinfo" string="Work Orders"/>
+                </button>
+            </xpath>
+
+            <!-- Add the custom booking fields on the SO form -->
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                        <field name="booking_address" required="1"/>
+                        <field name="building_type_id" string="Facility Type" required="1"/>
+                        <field name="description" required="1"/>
+                        <field name="work_order_date" required="1"/>
+                        <field name="location_state_id" required="1"/>
+                        <field name="place" required="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
